@@ -11,6 +11,10 @@ public class CodeWriter {
     private int gtNumber = 1;
     private int ltNumber = 1;
 
+    /**
+     * Constructor for CodeWriter to create the asm file and get it ready for writing to
+     * @param fileName
+     */
     public CodeWriter(String fileName) {
         file = fileName.substring(0, fileName.indexOf("."));
 
@@ -25,6 +29,9 @@ public class CodeWriter {
         }
     }
 
+    /**
+     * Closes and saves the asm file
+     */
     public void close() {
         try {
             outputFile.close();
@@ -33,10 +40,14 @@ public class CodeWriter {
         }
     }
 
+    /**
+     * Converts Arithmetic vm commands into assembly
+     * @param command the vm command being translated into assembly
+     */
     public void writeArithmetic(String command) {
-
         try {
             switch (command) {
+                //Turns the vm 'add' command to asm
                 case "add":
                     outputFile.write("@SP");
                     outputFile.newLine();
@@ -55,6 +66,7 @@ public class CodeWriter {
                     outputFile.write("M=D");
                     outputFile.newLine();
                     break;
+                //Turns the vm 'sub' command to asm
                 case "sub":
                     outputFile.write("@SP");
                     outputFile.newLine();
@@ -74,6 +86,7 @@ public class CodeWriter {
                     outputFile.newLine();
 
                     break;
+                //Turns the vm 'neg' command to asm
                 case "neg":
                     outputFile.write("@SP");
                     outputFile.newLine();
@@ -83,6 +96,7 @@ public class CodeWriter {
                     outputFile.newLine();
 
                     break;
+                //Turns the vm 'eq' command to asm
                 case "eq":
                     String equalLabel = "EQUAL" + eqNumber;
                     String equalEndLabel = "EQUALEND" + eqNumber;
@@ -128,6 +142,7 @@ public class CodeWriter {
                     outputFile.newLine();
 
                     break;
+                //Turns the vm 'gt' command to asm
                 case "gt":
                     String greaterThanLabel = "GREATERTHAN" + gtNumber;
                     String greaterThanEndLabel = "GREATERTHANEND" + gtNumber;
@@ -173,6 +188,7 @@ public class CodeWriter {
                     outputFile.newLine();
 
                     break;
+                //Turns the vm 'lt' command to asm
                 case "lt":
                     String lessThanLabel = "LESSTHAN" + ltNumber;
                     String lessThanEndLabel = "LESSTHANEND" + ltNumber;
@@ -218,6 +234,7 @@ public class CodeWriter {
                     outputFile.newLine();
 
                     break;
+                //Turns the vm 'and' command to asm
                 case "and":
                     outputFile.write("@SP");
                     outputFile.newLine();
@@ -231,6 +248,7 @@ public class CodeWriter {
                     outputFile.newLine();
 
                     break;
+                //Turns the vm 'or' command to asm
                 case "or":
                     outputFile.write("@SP");
                     outputFile.newLine();
@@ -244,6 +262,7 @@ public class CodeWriter {
                     outputFile.newLine();
 
                     break;
+                //Turns the vm 'not' command to asm
                 case "not":
                     outputFile.write("@SP");
                     outputFile.newLine();
@@ -257,6 +276,7 @@ public class CodeWriter {
                 default:
                     break;
             }
+            //Used for splitting each command for debugging
             outputFile.write("//----------------");
             outputFile.newLine();
         } catch(IOException e) {
@@ -264,12 +284,19 @@ public class CodeWriter {
         }
     }
 
+    /**
+     * Converts Push and Pop commands from vm to assembly
+     * @param commandType The type of command being converted, either 'Push' or 'Pop'
+     * @param segment The segment of memory being modified
+     * @param index the index of the memory location or the address
+     */
     public void writePushPop(CommandType commandType, String segment, int index) {
         try {
             switch (commandType) {
                 case C_POP:
 
                     switch (segment) {
+                        //Turns the vm 'local' pop command into asm
                         case "local":
                             String address = "@" + index;
                             outputFile.write(address);
@@ -300,6 +327,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
+                        //Turns the vm 'argument' pop command into asm
                         case "argument":
                             outputFile.write("@" + index);
                             outputFile.newLine();
@@ -327,7 +355,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
-
+                        //Turns the vm 'this' pop command into asm
                         case "this":
                             outputFile.write("@" + index);
                             outputFile.newLine();
@@ -355,6 +383,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
+                        //Turns the vm 'that' pop command into asm
                         case "that":
                             outputFile.write("@" + index);
                             outputFile.newLine();
@@ -382,6 +411,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
+                        //Turns the vm 'temp' pop command into asm
                         case "temp":
                             int addr = 5 + index;
                             outputFile.write("@SP");
@@ -396,6 +426,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
+                        //Turns the vm 'pointer' pop command into asm, depending on 0 and 1
                         case "pointer":
                             if(index == 0) {
                                 outputFile.write("@SP");
@@ -422,28 +453,9 @@ public class CodeWriter {
                             }
 
                             break;
+                        //Turns the vm 'static' pop command into asm
                         case "static":
                             String fileName = "@" + file + "." + index;
-                            /*outputFile.write(fileName);
-                            outputFile.newLine();
-                            outputFile.write("D=A");
-                            outputFile.newLine();
-                            outputFile.write("@temp");
-                            outputFile.newLine();
-                            outputFile.write("M=D");
-                            outputFile.newLine();
-                            outputFile.write("@SP");
-                            outputFile.newLine();
-                            outputFile.write("AM=M-1");
-                            outputFile.newLine();
-                            outputFile.write("D=M");
-                            outputFile.newLine();
-                            outputFile.write("@temp");
-                            outputFile.newLine();
-                            outputFile.write("A=M");
-                            outputFile.newLine();
-                            outputFile.write("M=D");
-                            outputFile.newLine(); */
                             outputFile.write("@SP");
                             outputFile.newLine();
                             outputFile.write("AM=M-1");
@@ -460,8 +472,8 @@ public class CodeWriter {
                     }
                     break;
                 case C_PUSH:
-
                     switch (segment) {
+                        //Turns the vm 'constant' push command into asm
                         case "constant":
                             String address = "@" + index;
                             if (index == 0 || index == 1 || index == -1) {
@@ -493,6 +505,7 @@ public class CodeWriter {
                                 outputFile.newLine();
                             }
                             break;
+                        //Turns the vm 'static' push command into binary
                         case "static":
                             String fileName = "@" + file + "." + index;
                             outputFile.write(fileName);
@@ -511,6 +524,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
+                        //Turns the vm 'pointer' push command into asm
                         case "pointer":
                             if(index == 0) {
                                 outputFile.write("@THIS");
@@ -543,6 +557,7 @@ public class CodeWriter {
                             }
 
                             break;
+                        //Turns the vm 'this' push command into asm
                         case "this":
                             outputFile.write("@" + index);
                             outputFile.newLine();
@@ -566,6 +581,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
+                        //Turns the vm 'that' push command into asm
                         case "that":
                             outputFile.write("@" + index);
                             outputFile.newLine();
@@ -589,6 +605,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
+                        //Turns the vm 'local' push command into asm
                         case "local":
                             outputFile.write("@" + index);
                             outputFile.newLine();
@@ -612,6 +629,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
+                        //Turns the vm 'argument' push command into asm
                         case "argument":
                             outputFile.write("@" + index);
                             outputFile.newLine();
@@ -635,6 +653,7 @@ public class CodeWriter {
                             outputFile.newLine();
 
                             break;
+                        //Turns the vm 'temp' push command into asm
                         case "temp":
                             int addr = 5 + index;
                             outputFile.write("@" + addr);
@@ -661,11 +680,11 @@ public class CodeWriter {
                 default:
                     break;
             }
+            //Breaks up commands for debugging
             outputFile.write("//----------------");
             outputFile.newLine();
         } catch(IOException e) {
             e.getMessage();
         }
     }
-
 }
