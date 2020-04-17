@@ -1,6 +1,0 @@
-push constant -1
-push constant 5
-pop static 7
-pop local 2
-add
-eq

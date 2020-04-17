@@ -70,9 +70,11 @@ public class Parser {
             arg1 = currentLine;
 
             //Testing stuff
+            /*
             System.out.println("---------------------\nARITH COMMAND!");
             System.out.println("arg1: " + arg1);
             System.out.println("vvvvvvvvvvvvvvvvvvvvv");
+            */
         }
     }
 
@@ -87,6 +89,7 @@ public class Parser {
         arg2 = Integer.parseInt(tempArg);
 
         //Testing stuff
+        /*
         if(commandType() == CommandType.C_POP)
             System.out.println("---------------------\nPOP COMMAND!");
         else
@@ -94,6 +97,7 @@ public class Parser {
         System.out.println("arg1: " + arg1);
         System.out.println("arg2: " + arg2);
         System.out.println("vvvvvvvvvvvvvvvvvvvvv");
+         */
     }
 
     public String getArg1() {

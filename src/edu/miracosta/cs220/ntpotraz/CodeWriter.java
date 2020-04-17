@@ -7,6 +7,9 @@ import java.io.IOException;
 public class CodeWriter {
     private BufferedWriter outputFile;
     private String file;
+    private int eqNumber = 1;
+    private int gtNumber = 1;
+    private int ltNumber = 1;
 
     public CodeWriter(String fileName) {
         file = fileName.substring(0, fileName.indexOf("."));
@@ -37,7 +40,7 @@ public class CodeWriter {
                 case "add":
                     outputFile.write("@SP");
                     outputFile.newLine();
-                    outputFile.write("A=A-1");
+                    outputFile.write("A=M-1");
                     outputFile.newLine();
                     outputFile.write("D=M");
                     outputFile.newLine();
@@ -53,15 +56,41 @@ public class CodeWriter {
                     outputFile.newLine();
                     break;
                 case "sub":
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("A=M-1");
+                    outputFile.newLine();
+                    outputFile.write("D=M");
+                    outputFile.newLine();
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("M=M-D");
+                    outputFile.newLine();
+                    outputFile.write("AD=A+1");
+                    outputFile.newLine();
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("M=D");
+                    outputFile.newLine();
 
                     break;
                 case "neg":
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("A=M-1");
+                    outputFile.newLine();
+                    outputFile.write("M=-M");
+                    outputFile.newLine();
 
                     break;
                 case "eq":
+                    String equalLabel = "EQUAL" + eqNumber;
+                    String equalEndLabel = "EQUALEND" + eqNumber;
+                    eqNumber++;
+
                     outputFile.write("@SP");
                     outputFile.newLine();
-                    outputFile.write("A=A-1");
+                    outputFile.write("A=M-1");
                     outputFile.newLine();
                     outputFile.write("D=M");
                     outputFile.newLine();
@@ -69,48 +98,159 @@ public class CodeWriter {
                     outputFile.newLine();
                     outputFile.write("D=D-M");
                     outputFile.newLine();
-                    outputFile.write("@EQUAL");
+                    outputFile.write("@" + equalLabel);
                     outputFile.newLine();
                     outputFile.write("D;JEQ");
                     outputFile.newLine();
-                    outputFile.write("A=D");
-                    outputFile.newLine();
-                    outputFile.write("M=FALSE");
-                    outputFile.newLine();
                     outputFile.write("@SP");
                     outputFile.newLine();
-                    outputFile.write("M=D+1");
+                    outputFile.write("AM=M-1");
                     outputFile.newLine();
-                    outputFile.write("@EQUALEND");
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("M=0");
+                    outputFile.newLine();
+                    outputFile.write("@" + equalEndLabel);
                     outputFile.newLine();
                     outputFile.write("0;JMP");
                     outputFile.newLine();
-                    outputFile.write("(EQUAL)");
-                    outputFile.newLine();
-                    outputFile.write("A=D");
-                    outputFile.newLine();
-                    outputFile.write("M=TRUE");
+                    outputFile.write("(" + equalLabel + ")");
                     outputFile.newLine();
                     outputFile.write("@SP");
                     outputFile.newLine();
-                    outputFile.write("M=D+1");
+                    outputFile.write("AM=M-1");
                     outputFile.newLine();
-                    outputFile.write("(EQUALEND)");
+                    outputFile.write("A=A-1");
                     outputFile.newLine();
+                    outputFile.write("M=-1");
+                    outputFile.newLine();
+                    outputFile.write("(" +equalEndLabel + ")");
+                    outputFile.newLine();
+
                     break;
                 case "gt":
+                    String greaterThanLabel = "GREATERTHAN" + gtNumber;
+                    String greaterThanEndLabel = "GREATERTHANEND" + gtNumber;
+                    gtNumber++;
+
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("A=M-1");
+                    outputFile.newLine();
+                    outputFile.write("D=M");
+                    outputFile.newLine();
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("D=D-M");
+                    outputFile.newLine();
+                    outputFile.write("@" + greaterThanLabel);
+                    outputFile.newLine();
+                    outputFile.write("D;JLT");
+                    outputFile.newLine();
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("AM=M-1");
+                    outputFile.newLine();
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("M=0");
+                    outputFile.newLine();
+                    outputFile.write("@" + greaterThanEndLabel);
+                    outputFile.newLine();
+                    outputFile.write("0;JMP");
+                    outputFile.newLine();
+                    outputFile.write("(" + greaterThanLabel + ")");
+                    outputFile.newLine();
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("AM=M-1");
+                    outputFile.newLine();
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("M=-1");
+                    outputFile.newLine();
+                    outputFile.write("(" + greaterThanEndLabel + ")");
+                    outputFile.newLine();
 
                     break;
                 case "lt":
+                    String lessThanLabel = "LESSTHAN" + ltNumber;
+                    String lessThanEndLabel = "LESSTHANEND" + ltNumber;
+                    ltNumber++;
+
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("A=M-1");
+                    outputFile.newLine();
+                    outputFile.write("D=M");
+                    outputFile.newLine();
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("D=D-M");
+                    outputFile.newLine();
+                    outputFile.write("@" + lessThanLabel);
+                    outputFile.newLine();
+                    outputFile.write("D;JGT");
+                    outputFile.newLine();
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("AM=M-1");
+                    outputFile.newLine();
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("M=0");
+                    outputFile.newLine();
+                    outputFile.write("@" + lessThanEndLabel);
+                    outputFile.newLine();
+                    outputFile.write("0;JMP");
+                    outputFile.newLine();
+                    outputFile.write("(" + lessThanLabel + ")");
+                    outputFile.newLine();
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("AM=M-1");
+                    outputFile.newLine();
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("M=-1");
+                    outputFile.newLine();
+                    outputFile.write("(" + lessThanEndLabel + ")");
+                    outputFile.newLine();
 
                     break;
                 case "and":
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("AM=M-1");
+                    outputFile.newLine();
+                    outputFile.write("D=M");
+                    outputFile.newLine();
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("M=D&M");
+                    outputFile.newLine();
 
                     break;
                 case "or":
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("AM=M-1");
+                    outputFile.newLine();
+                    outputFile.write("D=M");
+                    outputFile.newLine();
+                    outputFile.write("A=A-1");
+                    outputFile.newLine();
+                    outputFile.write("M=D|M");
+                    outputFile.newLine();
 
                     break;
                 case "not":
+                    outputFile.write("@SP");
+                    outputFile.newLine();
+                    outputFile.write("A=M-1");
+                    outputFile.newLine();
+                    outputFile.write("M=!M");
+                    outputFile.newLine();
 
                     break;
 
@@ -148,7 +288,7 @@ public class CodeWriter {
                             outputFile.newLine();
                             outputFile.write("@SP");
                             outputFile.newLine();
-                            outputFile.write("AM=A-1");
+                            outputFile.write("AM=M-1");
                             outputFile.newLine();
                             outputFile.write("D=M");
                             outputFile.newLine();
@@ -161,25 +301,13 @@ public class CodeWriter {
 
                             break;
                         case "argument":
-
-                            break;
-                        case "this":
-
-                            break;
-                        case "that":
-
-                            break;
-                        case "temp":
-
-                            break;
-                        case "pointer":
-
-                            break;
-                        case "static":
-                            String fileName = "@" + file + "." + index;
-                            outputFile.write(fileName);
+                            outputFile.write("@" + index);
                             outputFile.newLine();
                             outputFile.write("D=A");
+                            outputFile.newLine();
+                            outputFile.write("@ARG");
+                            outputFile.newLine();
+                            outputFile.write("D=M+D");
                             outputFile.newLine();
                             outputFile.write("@temp");
                             outputFile.newLine();
@@ -187,7 +315,7 @@ public class CodeWriter {
                             outputFile.newLine();
                             outputFile.write("@SP");
                             outputFile.newLine();
-                            outputFile.write("AM=A-1");
+                            outputFile.write("AM=M-1");
                             outputFile.newLine();
                             outputFile.write("D=M");
                             outputFile.newLine();
@@ -197,6 +325,136 @@ public class CodeWriter {
                             outputFile.newLine();
                             outputFile.write("M=D");
                             outputFile.newLine();
+
+                            break;
+
+                        case "this":
+                            outputFile.write("@" + index);
+                            outputFile.newLine();
+                            outputFile.write("D=A");
+                            outputFile.newLine();
+                            outputFile.write("@THIS");
+                            outputFile.newLine();
+                            outputFile.write("D=M+D");
+                            outputFile.newLine();
+                            outputFile.write("@temp");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("AM=M-1");
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@temp");
+                            outputFile.newLine();
+                            outputFile.write("A=M");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+
+                            break;
+                        case "that":
+                            outputFile.write("@" + index);
+                            outputFile.newLine();
+                            outputFile.write("D=A");
+                            outputFile.newLine();
+                            outputFile.write("@THAT");
+                            outputFile.newLine();
+                            outputFile.write("D=M+D");
+                            outputFile.newLine();
+                            outputFile.write("@temp");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("AM=M-1");
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@temp");
+                            outputFile.newLine();
+                            outputFile.write("A=M");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+
+                            break;
+                        case "temp":
+                            int addr = 5 + index;
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("AM=M-1");
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@" + addr);
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+
+                            break;
+                        case "pointer":
+                            if(index == 0) {
+                                outputFile.write("@SP");
+                                outputFile.newLine();
+                                outputFile.write("AM=M-1");
+                                outputFile.newLine();
+                                outputFile.write("D=M");
+                                outputFile.newLine();
+                                outputFile.write("@THIS");
+                                outputFile.newLine();
+                                outputFile.write("M=D");
+                                outputFile.newLine();
+                            } else if(index == 1) {
+                                outputFile.write("@SP");
+                                outputFile.newLine();
+                                outputFile.write("AM=M-1");
+                                outputFile.newLine();
+                                outputFile.write("D=M");
+                                outputFile.newLine();
+                                outputFile.write("@THAT");
+                                outputFile.newLine();
+                                outputFile.write("M=D");
+                                outputFile.newLine();
+                            }
+
+                            break;
+                        case "static":
+                            String fileName = "@" + file + "." + index;
+                            /*outputFile.write(fileName);
+                            outputFile.newLine();
+                            outputFile.write("D=A");
+                            outputFile.newLine();
+                            outputFile.write("@temp");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("AM=M-1");
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@temp");
+                            outputFile.newLine();
+                            outputFile.write("A=M");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine(); */
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("AM=M-1");
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write(fileName);
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+
                             break;
 
                     }
@@ -224,6 +482,7 @@ public class CodeWriter {
                                 outputFile.write("D=A");
                                 outputFile.newLine();
                                 outputFile.write("@SP");
+                                outputFile.newLine();
                                 outputFile.write("A=M");
                                 outputFile.newLine();
                                 outputFile.write("M=D");
@@ -235,24 +494,162 @@ public class CodeWriter {
                             }
                             break;
                         case "static":
+                            String fileName = "@" + file + "." + index;
+                            outputFile.write(fileName);
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("A=M");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("M=M+1");
+                            outputFile.newLine();
 
                             break;
                         case "pointer":
+                            if(index == 0) {
+                                outputFile.write("@THIS");
+                                outputFile.newLine();
+                                outputFile.write("D=M");
+                                outputFile.newLine();
+                                outputFile.write("@SP");
+                                outputFile.newLine();
+                                outputFile.write("A=M");
+                                outputFile.newLine();
+                                outputFile.write("M=D");
+                                outputFile.newLine();
+                                outputFile.write("@SP");
+                                outputFile.newLine();
+                                outputFile.write("M=M+1");
+                            } else if(index == 1) {
+                                outputFile.write("@THAT");
+                                outputFile.newLine();
+                                outputFile.write("D=M");
+                                outputFile.newLine();
+                                outputFile.write("@SP");
+                                outputFile.newLine();
+                                outputFile.write("A=M");
+                                outputFile.newLine();
+                                outputFile.write("M=D");
+                                outputFile.newLine();
+                                outputFile.write("@SP");
+                                outputFile.newLine();
+                                outputFile.write("M=M+1");
+                            }
 
                             break;
                         case "this":
+                            outputFile.write("@" + index);
+                            outputFile.newLine();
+                            outputFile.write("D=A");
+                            outputFile.newLine();
+                            outputFile.write("@THIS");
+                            outputFile.newLine();
+                            outputFile.write("A=M+D");
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("A=M");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("M=M+1");
+                            outputFile.newLine();
 
                             break;
                         case "that":
+                            outputFile.write("@" + index);
+                            outputFile.newLine();
+                            outputFile.write("D=A");
+                            outputFile.newLine();
+                            outputFile.write("@THAT");
+                            outputFile.newLine();
+                            outputFile.write("A=M+D");
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("A=M");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("M=M+1");
+                            outputFile.newLine();
 
                             break;
                         case "local":
+                            outputFile.write("@" + index);
+                            outputFile.newLine();
+                            outputFile.write("D=A");
+                            outputFile.newLine();
+                            outputFile.write("@LCL");
+                            outputFile.newLine();
+                            outputFile.write("A=M+D");
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("A=M");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("M=M+1");
+                            outputFile.newLine();
 
                             break;
                         case "argument":
+                            outputFile.write("@" + index);
+                            outputFile.newLine();
+                            outputFile.write("D=A");
+                            outputFile.newLine();
+                            outputFile.write("@ARG");
+                            outputFile.newLine();
+                            outputFile.write("A=M+D");
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("A=M");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("M=M+1");
+                            outputFile.newLine();
 
                             break;
                         case "temp":
+                            int addr = 5 + index;
+                            outputFile.write("@" + addr);
+                            outputFile.newLine();
+                            outputFile.write("D=M");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("A=M");
+                            outputFile.newLine();
+                            outputFile.write("M=D");
+                            outputFile.newLine();
+                            outputFile.write("@SP");
+                            outputFile.newLine();
+                            outputFile.write("M=M+1");
 
                             break;
                         default:
